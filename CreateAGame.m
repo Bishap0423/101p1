@@ -1,7 +1,7 @@
-function CreateAGame()
-    [ax, fig] = InitPlayground(@onKeyPress);
+function Scores = CreateAGame(ax, fig)
+    %[ax, fig] = InitPlayground(@onKeyPress);
     FPS = 8;
-    hold(ax, 'on');
+    
 
     snake_rectangle = gobjects(400, 1);
     Snake.Body = [2 20;1 20];
@@ -10,6 +10,7 @@ function CreateAGame()
     Snake.Apple = [5 9];
     Snake = AppleTree(Snake);
     Scores = 0;
+    set(fig, 'KeyPressFcn', @onKeyPress);
 
     % DashBoard
 
@@ -30,27 +31,16 @@ function CreateAGame()
     apple_rec = rectangle( ...
         'FaceColor', 'r', ...
         'Position', [Snake.Apple(1)-0.5, Snake.Apple(2)-0.5, 1, 1]);
-    Score_text = text(ax, -4, 19.5, 'Score: 0', ...
-        'Color', 'k', ...
-        'FontSize', 14);
-    Game_text = text(ax, -4, 15.5, {
-      'W - Up'
-      'S - Down'
-      'A - Left'
-      'D - Right'
-  }, ...        
+    Score_text = text(ax, -6.5, 19.5, 'Score: 0', ...
         'Color', 'k', ...
         'FontSize', 14);
         
 
     while isvalid(fig) && true
 
-        EndReason = "Unexcept Quit";
-
         Snake.Dir = Snake.NextDir;
 
         if HitCheck(Snake)
-            EndReason = "You fail";
             break
         elseif EatCheck(Snake)
             Snake = MoveSnake(Snake, "evt_apple");
@@ -61,7 +51,6 @@ function CreateAGame()
             Snake = AppleTree(Snake);
             if Snake.Apple == [0 0] % win
                 Scores = Scores + 1;
-                EndReason = "You win";
                 set(apple_rec, 'FaceColor',[1 1 1]);
                 break
             end
@@ -85,8 +74,6 @@ function CreateAGame()
 
         pause(1/FPS);
     end
-
-    fprintf("%s, but at least you get %d points\n", EndReason, Scores);
 
     %callback function
     function onKeyPress(~, evt)
@@ -113,4 +100,3 @@ end
 
 
     
-

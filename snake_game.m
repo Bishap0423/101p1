@@ -1,9 +1,10 @@
+%% Login sys
+LoginFigure();
+
 %% Initial the game     
 
-[ax, fig] = InitPlayground(@onKeyPress);
-Score_text = text(ax, -6.5, 19.5, 'Score: 0', ...
-        'Color', 'k', ...
-        'FontSize', 14);
+[ax, fig] = InitPlayground(@(~, ~) []);
+hold(ax, 'on');
 Game_text = text(ax, -6.5, 15.5, {
       'W - Up'
       'S - Down'
@@ -13,21 +14,41 @@ Game_text = text(ax, -6.5, 15.5, {
         'Color', 'k', ...
         'FontSize', 14);
 
+
 %% LeaderBoard Sys
 
-fid = fopen('PlayerData.txt', 'r');
-data = textscan(fid, '%s %u');
-fclose(fid);
-
-Name = data{1};
-Score = data{2};
+load("Top.mat")
 
 LeaderBoardText = {
-    sprintf('1st %s %d points', Name{1}, Score(1))
-    sprintf('2nd %s %d points', Name{2}, Score(2))
-    sprintf('3rd %s %d points', Name{3}, Score(3))
+    sprintf('1st %s %d points', Top(1).Name, Top(1).Score)
+    sprintf('2nd %s %d points', Top(2).Name, Top(2).Score)
+    sprintf('3rd %s %d points', Top(3).Name, Top(3).Score)
 };
 
 LeaderBoard = text(ax, -6.5, 11.5, LeaderBoardText, ...
     'Color', 'k', ...
     'FontSize', 14);
+
+
+%% Main game loop
+
+Top(4).Score = CreateAGame(ax, fig);
+save('Top.mat', 'Top');
+
+%% EndTheGame 
+
+GameOver(ax);
+
+%% LeaderBoard Sys
+
+load("Top.mat")
+
+LeaderBoardText = {
+    sprintf('1st %s %d points', Top(1).Name, Top(1).Score)
+    sprintf('2nd %s %d points', Top(2).Name, Top(2).Score)
+    sprintf('3rd %s %d points', Top(3).Name, Top(3).Score)
+};
+
+set(LeaderBoard, 'String', LeaderBoardText);
+
+%% 
