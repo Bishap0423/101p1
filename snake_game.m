@@ -1,10 +1,24 @@
 %% Login sys
 LoginFigure();
 
-%% Initial the game     
+%% Initial the game  
 
 [ax, fig] = InitPlayground(@(~, ~) []);
+
+playAgain = true;
+
+while playAgain == true
+
+
+cla(ax);
 hold(ax, 'on');
+
+
+rectangle(ax, ...
+    'Position', [-7, 0.5, 7.5, 20], ...
+    'FaceColor', 'white', ...
+    'EdgeColor', 'none');
+
 Game_text = text(ax, -6.5, 15.5, {
       'W - Up'
       'S - Down'
@@ -33,6 +47,11 @@ LeaderBoard = text(ax, -6.5, 11.5, LeaderBoardText, ...
 %% Main game loop
 
 Top(4).Score = CreateAGame(ax, fig);
+
+if ~isvalid(fig) || ~isvalid(ax)
+    break
+end
+
 save('Top.mat', 'Top');
 
 %% EndTheGame 
@@ -50,5 +69,13 @@ LeaderBoardText = {
 };
 
 set(LeaderBoard, 'String', LeaderBoardText);
+
+text(ax, -6.5, 4.5, { ...
+    "Press Return try again!"}, ...        
+    'Color', 'k', ...
+    'FontSize', 14);
+playAgain = WaitForReturn(fig);
+
+end
 
 %% 
